@@ -65,8 +65,16 @@ public class PatrimonioController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        Optional<Patrimonio> patrimonio = patrimonioRepository.findById(id);
+        if(!patrimonio.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
         patrimonioRepository.deleteById(id);
+
+        return ResponseEntity.ok(null);
     }
 
 }
